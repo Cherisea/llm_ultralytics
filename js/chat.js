@@ -744,7 +744,7 @@ class UltralyticsChat {
         previewUrl,
       });
     }
-    // this.updateComposerBadges();
+    this.updateComposerBadges();
     this.updateComposerState();
     this.focusInput();
   }
@@ -755,7 +755,7 @@ class UltralyticsChat {
     if (idx < 0) return;
     const [removed] = this.pendingAttachments.splice(idx, 1);
     if (removed.previewUrl) URL.revokeObjectURL(removed.previewUrl);
-    // this.updateComposerBadges();
+    this.updateComposerBadges();
     this.updateComposerState();
     this.focusInput();
   }
