@@ -1195,10 +1195,11 @@ class UltralyticsChat {
   updateComposerState() {
     if (!this.refs.send) return;
     const hasText = !!this.refs.input?.value.trim().length;
+    const hasAttachments = this.pendingAttachments.length > 0;
     if (this.isStreaming) {
       this.swapSendIcon("square");
       this.refs.send.style.display = "flex";
-    } else if (hasText) {
+    } else if (hasText || hasAttachments) {
       this.swapSendIcon("arrowUp");
       this.refs.send.style.display = "flex";
     } else {
