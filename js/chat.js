@@ -854,7 +854,8 @@ class UltralyticsChat {
 
     this.on(this.refs.toolBadges, "click", (e) => {
       const badge = e.target.closest(".ult-tool-badge");
-      if (badge) this.removeTool(badge.dataset.tool);
+      if (badge?.dataset.attachmentId) this.removeAttachment(badge.dataset.attachmentId);
+      else if (badge?.dataset.tool) this.removeTool(badge.dataset.tool);
     });
     this.on(this.refs.toolBadges, "mouseover", (e) => {
       const badge = e.target.closest(".ult-tool-badge");
