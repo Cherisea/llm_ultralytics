@@ -154,6 +154,12 @@ const chat = new UltralyticsChat({
 
 `UltralyticsChat` automatically injects document context (title, URL, path) into each request so your backend can provide page-aware responses. When `pageContent: true` is set, the widget also scrapes visible text from the page's `<main>` element (up to 5,000 characters), stripping navigation, scripts, SVGs, and elements marked with `data-chat-ignore`. This gives the AI full awareness of what the user is currently viewing. When disabled (default), the widget falls back to the page's `<meta name="description">` tag.
 
+### File Upload in Chat
+
+File uploads are directly integrated into a dropdown menu at the text area, allowing users to upload files from their local device when interacting with the LLM agent. Files are converted into plain text using base64 encoding scheme after attachment for following benefits:
+- ** External API Compatibility **: Both Claude and Open AI's APIs accept files as base64 encoded strings, making it easier to connect with external LLM clients;
+- ** JSON Request Compatibility **: Since JSON is a text-only format, base64 encoded strings can be appended to existing payload without any transformation;
+
 ### API Requirements
 
 Your backend should implement:
