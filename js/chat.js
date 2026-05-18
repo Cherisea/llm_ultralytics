@@ -718,10 +718,16 @@ class UltralyticsChat {
         this.toggleToolsDropdown(false);
       }
     });
+
+    // Handle file upload feature differently 
     this.on(this.refs.toolsDropdown, "click", (e) => {
       const option = e.target.closest(".ult-tool-option");
-      if (option) this.addTool(option.dataset.tool);
+      if (option) {
+        if (option.dataset.tool == "upload") this.openFilePicker();
+        else this.addTool(option.dataset.tool);
+      }
     });
+
     this.on(this.refs.toolBadges, "click", (e) => {
       const badge = e.target.closest(".ult-tool-badge");
       if (badge) this.removeTool(badge.dataset.tool);
