@@ -749,6 +749,26 @@ class UltralyticsChat {
     this.focusInput();
   }
   
+  // Removes an attachment
+  removeAttachment(id) {
+    const idx = this.pendingAttachments.findIndex((a) => a.id == id);
+    if (idx < 0) return;
+    const [removed] = this.pendingAttachments.splice(idx, 1);
+    if (removed.previewUrl) URL.revokeObjectURL(removed.previewUrl);
+    // this.updateComposerBadges();
+    this.updateComposerState();
+    this.focusInput();
+  }
+
+  // Clears all uploaded attachments
+  clearAttachment() {
+    for (const att of this.pendingAttachments) {
+      if (att.previewUrl) URL.revokeObjectURL(att.previewUrl);
+    }
+    this.pendingAttachments = [];
+    // this.updateComposerBadges();
+    this.updateComposerState();
+  }
 
   updateToolBadges() {
     if (!this.refs.toolBadges) return;
