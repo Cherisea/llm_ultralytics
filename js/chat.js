@@ -86,6 +86,13 @@ class UltralyticsChat {
       { id: "github", name: "GitHub", icon: "github" },
       { id: "upload", name: "Upload file", icon: "paperclip"},    // Add an entry for new tool 
     ]);
+
+    // States and limits on file upload
+    this.pendingAttachments = []
+    this.uploadAccept = d(config.upload, "accept", "image/*, .pdf, .txt, .md, .yaml, .yml");
+    this.uploadMaxFiles = d(config.upload, "maxFiles", 5);
+    this.uploadMaxSize = d(config.upload, "maxFileSize", 10 * 1024 * 1024);
+
     this.toolsOpen = false;
     this.totalUserMessages = null;
     this.activeUserMessages = null;
@@ -669,6 +676,10 @@ class UltralyticsChat {
     this.selectedTools.delete(toolId);
     this.updateToolBadges();
     this.focusInput();
+  }
+
+  openFilePicker() {
+
   }
 
   updateToolBadges() {
