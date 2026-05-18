@@ -779,8 +779,8 @@ class UltralyticsChat {
         const tool = this.getTool(id);
         if (!tool) return "";
         return `<button type="button" class="ult-tool-badge" data-tool="${tool.id}" aria-label="Remove ${tool.name}" tabindex="0">
-                <motion><motion><span class="ult-icon-main">${this.icon(tool.icon)}</span>
-                <span class="ult-icon-remove">${this.icon("x")}</span></motion></motion>${this.escapeHtml(tool.name)}</button>`;
+                <div class="ult-tool-badge-icon"><span class="ult-icon-main">${this.icon(tool.icon)}</span>
+                <span class="ult-icon-remove">${this.icon("x")}</span></div>${this.escapeHtml(tool.name)}</button>`;
       })
       .filter(Boolean)
       .join("");
