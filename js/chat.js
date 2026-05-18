@@ -770,23 +770,48 @@ class UltralyticsChat {
     this.updateComposerState();
   }
 
-  updateToolBadges() {
+  updateComposerBadges() {
     if (!this.refs.toolBadges) return;
-    if (this.selectedTools.size === 0) {
+    
+    // Converts each tool string into HTML button string
+    const toolHtml = [...this.selectedTools]
+      .map((id) => {
+        const tool = this.getTool(id);
+        if (!tool) return "";
+        return `<button type="button" class="ult-tool-badge" data-tool="${tool.id}" aria-label="Remove ${tool.name}" tabindex="0">
+                <motion><motion><span class="ult-icon-main">${this.icon(tool.icon)}</span>
+                <span class="ult-icon-remove">${this.icon("x")}</span></motion></motion>${this.escapeHtml(tool.name)}</button>`;
+      })
+      .filter(Boolean)
+      .join("");
+
+    // Converts each file attachment into HTML button string
+    const attHtml = this.pendingAttachments
+      .map((att) => {
+        const label = this.escapeHtml(att.name);
+        const icon = att.previewUrl
+          ? `<img src="${att.previewUrl}" alt="" width="16" height="16" style="border-radius:3px;object-fit:cover" />`
+          : this.icon("paperclip");
+        return `<button type="button" class="ult-tool-badge ult-attachment-badge" data-attachment-id="${att.id}" aria-label="Remove ${label}" tabindex="0">
+                <div class="ult-tool-badge-icon"><span class="ult-icon-main">${icon}</span>
+                <span class="ult-icon-remove">${this.icon("x")}</span></div>${label}</button>`;
+      })
+      .join("");
+    const html = toolHtml + attHtml
+
+    if (!html) {
       this.refs.toolBadges.classList.add("hidden");
       this.refs.toolBadges.innerHTML = "";
       return;
     }
-    const badgeHtml = [...this.selectedTools]
-      .map((id) => {
-        const tool = this.getTool(id);
-        if (!tool) return "";
-        return `<button type="button" class="ult-tool-badge" data-tool="${tool.id}" aria-label="Remove ${tool.name}" tabindex="0"><div class="ult-tool-badge-icon"><span class="ult-icon-main">${this.icon(tool.icon)}</span><span class="ult-icon-remove">${this.icon("x")}</span></div>${tool.name}</button>`;
-      })
-      .filter(Boolean)
-      .join("");
-    this.refs.toolBadges.innerHTML = badgeHtml;
+    
+    this.refs.toolBadges.innerHTML = html;
     this.refs.toolBadges.classList.remove("hidden");
+  }
+
+  // Included for backward compatibility
+  updateToolBadges() {
+    this.updateComposerBadges();
   }
 
   setExamples(list) {
