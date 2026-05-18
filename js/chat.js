@@ -707,6 +707,47 @@ class UltralyticsChat {
       input.value = "";
     });
   }
+
+  // Validate attached files
+  validateAttachment(file) {
+    if (!file) return "Invalid file";
+    if (file.size > this.uploadMaxSize) {
+      const mb = Math.round(this.uploadMaxSize / (1024 * 1024));
+      return `File must be under ${mb} MB`;
+    }
+    if (this.pendingAttachments.length >= this.uploadMaxFiles) {
+      return `Maximum ${this.uploadMaxFiles} files`;
+    }
+    return null;
+  }
+
+  // Add uploaded files as attachments
+  addAttachments(files) {
+    for (const file of files) {
+      const err = this.validateAttachment(file);
+      if (err) {
+        this.flashTooltip(this.refs.toolAdd ?? this.refs.input, err);
+        continue;
+      }
+
+      const id = 
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `att_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const previewUrl = file.type.startsWith("image/") ? URL.createObjectURL(file) : null;
+      this.pendingAttachments.push({
+        id,
+        file,
+        name: file.name,
+        mime: file.type || "application/octet-stream",
+        size: file.size,
+        previewUrl,
+      });
+    }
+    // this.updateComposerBadges();
+    this.updateComposerState();
+    this.focusInput();
+  }
   
 
   updateToolBadges() {
