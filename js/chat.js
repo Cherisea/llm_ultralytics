@@ -88,7 +88,7 @@ class UltralyticsChat {
     ]);
 
     // States and limits on file upload
-    this.pendingAttachments = []
+    this.pendingAttachments = []    // Temprarily store uploaded files 
     this.uploadAccept = d(config.upload, "accept", "image/*, .pdf, .txt, .md, .yaml, .yml");
     this.uploadMaxFiles = d(config.upload, "maxFiles", 5);
     this.uploadMaxSize = d(config.upload, "maxFileSize", 10 * 1024 * 1024);
@@ -678,9 +678,36 @@ class UltralyticsChat {
     this.focusInput();
   }
 
-  openFilePicker() {
+  // File picker handler: triggered when a user clicks upload
+  openFilePicker() {  
+    // Disabled if chat is streamming or in search mode
+    if (this.isStreaming || this.mode == "search") return;
 
+    this.toggleToolsDropdown(false);
+    this.ensureFileInput();
+    this.refs.fileInput.click();
   }
+
+  // Create a file DOM object and stage file uploads
+  ensureFileInput() {
+    if (this.refs.fileInput) return;
+    const input = this.el("input");
+    input.type = "file";
+    input.multiple = true;
+    input.accept = this.uploadAccept;
+    input.className = "ult-file-input";
+    input.style.cssText = "position:absolute;width:0;height:0;opacity:0;pointer-events:none;";
+    input.setAttribute("aria-hidden", "true");
+    input.tabIndex = -1;
+    this.refs.modal?.querySelector(".ult-chat-input-wrapper")?.appendChild(input);
+    this.refs.fileInput = input;
+    this.on(input, "change", () => {
+      const files = input.files ? [...input.files] : [];
+      if (files.length) this.addAttachments(files);
+      input.value = "";
+    });
+  }
+  
 
   updateToolBadges() {
     if (!this.refs.toolBadges) return;
