@@ -1298,6 +1298,7 @@ class UltralyticsChat {
 
   clearSession() {
     this.messages = [];
+    this.clearAttachment();
     this.sessionId = null;
     this.totalUserMessages = null;
     this.activeUserMessages = null;
