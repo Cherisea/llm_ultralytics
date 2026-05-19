@@ -1474,15 +1474,27 @@ class UltralyticsChat {
     this.abortController = new AbortController();
     const safeEditIndex =
       Number.isInteger(editIndex) && editIndex >= 0 && editIndex < this.messages.length ? editIndex : null;
+    
     try {
+      const apiAttachments = 
+        attachmentsSnapshot.length > 0
+          ? await this.prepareAttachmentsForRequest(attachmentsSnapshot)
+          : [];
+
       const body = {
-        messages: [{ role: "user", content: text }],
+        messages: [
+          { role: "user", 
+            content: text || (apiAttachments.length ? "(See attachments)" : ""),
+          },
+        ],
         session_id: this.sessionId,
         context: this.getPageContext(),
       };
       if (this.config.instructions) body.instructions = this.config.instructions;
       if (safeEditIndex !== null) body.edit_index = safeEditIndex;
       if (this.selectedTools.size > 0) body.tools = [...this.selectedTools];
+      if (apiAttachments.length > 0) body.attachments = apiAttachments;
+      
       const res = await fetch(this.apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
