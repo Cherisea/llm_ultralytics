@@ -1427,22 +1427,43 @@ class UltralyticsChat {
   }
 
   async sendMessage(text, isNew = true, editIndex = null) {
-    if (!text || this.isStreaming || !this.refs.input || !this.refs.messages) return;
-    text = this.trimMessage(text, this.refs.input);
-    if (!text) return;
+    if (this.isStreaming || !this.refs.input || !this.refs.messages) return;
+    const hasAttachments = this.pendingAttachments.length > 0;
+    text = this.trimMessage(text ?? "", this.refs.input);
+    if (!text && !hasAttachments) return;
+
+    // Add support for attachments only chat
+    const attachmentsSnapshot = isNew ? [...this.pendingAttachments] : [];
+    const attachmentMeta = attachmentsSnapshot.map(({ id, name, mime, size }) => ({
+      id,
+      name,
+      mime,
+      size,
+    }));
+
     this.showWelcome(false);
     this.autoScroll = true;
     if (this.mode === "search") {
+      if (!text) return;
       this.setInputValue(text);
       await this.performSearch(text);
       this.focusInput();
       return;
     }
     if (isNew) {
-      this.messages.push({ role: "user", content: text });
-      this.addMessageToUI("user", text, this.messages.length - 1);
+      const displayText = text || 
+          (attachmentMeta.length ? `Attached: ${attachmentMeta.map((a) => a.name).join(", ")}` : ""); 
+      this.messages.push({
+        role: "user",
+        content: displayText,
+        attachments: attachmentMeta.length ? attachmentMeta : undefined,
+      });
+      this.addMessageToUI("user", displayText, this.messages.length - 1);
     }
     this.setInputValue("");
+    this.clearAttachment();
+    this.updateComposerBadges();
+
     this.isStreaming = true;
     this.updateComposerState();
     this.setUserMessagesEditable(false);
