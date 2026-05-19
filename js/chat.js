@@ -89,7 +89,7 @@ class UltralyticsChat {
 
     // States and limits on file upload
     this.pendingAttachments = []    // Temprarily store uploaded files 
-    this.uploadAccept = d(config.upload, "accept", "image/*, .pdf, .txt, .md, .yaml, .yml");
+    this.uploadAccept = d(config.upload, "accept", "image/*,.pdf,.txt,.md,.yaml,.yml");
     this.uploadMaxFiles = d(config.upload, "maxFiles", 5);
     this.uploadMaxSize = d(config.upload, "maxFileSize", 10 * 1024 * 1024);
 
