@@ -770,6 +770,21 @@ class UltralyticsChat {
     this.updateComposerState();
   }
 
+  // Convert staged attachments into base64 string
+  fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        const base64 = typeof result === "string" && result.includes(",") ?
+          result.split(",")[1] : result;
+        resolve(base64);
+      };
+      reader.onerror = () => reject(reader.error ?? new Error("Failed to read file"));
+      reader.readAsDataURL(file);
+    });
+  }
+
   updateComposerBadges() {
     if (!this.refs.toolBadges) return;
     
