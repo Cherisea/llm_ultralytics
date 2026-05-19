@@ -785,6 +785,23 @@ class UltralyticsChat {
     });
   }
 
+  // Prepare attachments for JSON request
+  async prepareAttachmentsForRequest(attachments) {
+    const out = []
+    for (att of attachments) {
+      if (!att?.file) continue;   // Ignore corrupted files
+      const data = await this.fileToBase64(att.file);
+      out.push({
+        id: att.id,
+        name: att.name,
+        mime: att.mime,
+        size: att.size,
+        data,
+      });
+    }
+    return out;
+  }
+
   updateComposerBadges() {
     if (!this.refs.toolBadges) return;
     
