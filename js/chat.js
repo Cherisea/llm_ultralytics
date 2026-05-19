@@ -1461,7 +1461,6 @@ class UltralyticsChat {
       this.addMessageToUI("user", displayText, this.messages.length - 1);
     }
     this.setInputValue("");
-    this.clearAttachment();
     this.updateComposerBadges();
 
     this.isStreaming = true;
@@ -1553,6 +1552,7 @@ class UltralyticsChat {
       this.scrollToBottom();
       this.messages.push({ role: "assistant", content });
       this.updateFooter();
+      this.clearAttachment();
     } catch (e) {
       thinking.remove();
       clear();
